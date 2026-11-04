@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forsati · Punto de venta con inventario para tiendas del Ecuador</title>
+<meta name="description" content="Escanee, venda y facture al SRI desde el navegador de su caja. Sabe cuánto stock tiene y dónde está, y sigue vendiendo aunque se caiga el internet. $15 al mes, 14 días de prueba gratis.">
+<meta name="theme-color" content="#1d4ed8">
+<meta property="og:title" content="Forsati · Punto de venta con inventario para tiendas del Ecuador">
+<meta property="og:description" content="Venda con código de barras, controle su stock y emita facturas del SRI. Funciona aunque se caiga el internet. Desde $15 al mes.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231d4ed8'/%3E%3Cpath d='M8 9v14M12 9v14M16 9v14M21 9v14M24 9v14' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --ink: #111c33;
+    --muted: #4a5568;
+    --brand: #1d4ed8;
+    --brand-strong: #1e40af;
+    --brand-soft: #e8efff;
+    --accent: #f2b705;
+    --paper: #ffffff;
+    --page: #f5f7fa;
+    --line: #dde3ec;
+    --dark: #111c33;
+    --danger: #b42318;
+    --radius: 14px;
+    --max: 1080px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eaf0f9;
+      --muted: #a9b6c9;
+      --brand: #7aa2ff;
+      --brand-strong: #5b8cff;
+      --brand-soft: #16264d;
+      --paper: #172033;
+      --page: #0e1523;
+      --line: #2a374d;
+      --dark: #09101c;
+      --danger: #ff8a7a;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  body {
+    background: var(--page); color: var(--ink);
+    font-family: "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    line-height: 1.55; -webkit-text-size-adjust: 100%;
+  }
+  a { color: inherit; }
+  .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+  section { padding: 72px 0; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -.015em; }
+  h2 { font-size: clamp(26px, 4vw, 36px); margin-bottom: 12px; }
+  .eyebrow {
+    display: inline-block; background: var(--brand-soft); color: var(--brand);
+    font-weight: 700; font-size: 12.5px; letter-spacing: .07em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 99px; margin-bottom: 14px;
+  }
+  .sub { color: var(--muted); font-size: 18px; max-width: 640px; }
+  .center { text-align: center; }
+  .center .sub { margin: 0 auto; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; padding: 12px 22px; border-radius: 10px;
+    font-weight: 700; font-size: 16px; text-decoration: none; border: 2px solid transparent;
+    transition: transform .12s, background .12s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-strong); }
+  @media (prefers-color-scheme: dark) { .btn-primary { color: #0a1330; } }
+  .btn-ghost { border-color: var(--line); color: var(--ink); background: var(--paper); }
+  .btn-ghost:hover { border-color: var(--brand); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  header.nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; text-decoration: none; }
+  .logo i { width: 28px; height: 28px; border-radius: 7px; background: var(--brand); display: grid; place-items: center; }
+  .logo svg { width: 18px; height: 18px; }
+  .nav nav { display: flex; align-items: center; gap: 22px; font-size: 15px; font-weight: 600; }
+  .nav nav a { text-decoration: none; color: var(--muted); }
+  .nav nav a:hover { color: var(--ink); }
+  .nav .btn { min-height: 40px; padding: 8px 16px; font-size: 15px; color: #fff; }
+  @media (prefers-color-scheme: dark) { .nav .btn { color: #0a1330; } }
+  @media (max-width: 760px) { .nav nav a.hide-sm { display: none; } }
+
+  .hero { padding: 56px 0 72px; background:
+    radial-gradient(900px 400px at 85% -10%, color-mix(in srgb, var(--brand) 14%, transparent), transparent),
+    var(--page); }
+  .hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; }
+  .hero h1 { font-size: clamp(34px, 5.4vw, 54px); margin: 6px 0 18px; }
+  .hero h1 em { font-style: normal; color: var(--brand); }
+  .hero .sub { margin-bottom: 26px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .ticks { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 24px; font-size: 14.5px; color: var(--muted); list-style: none; padding: 0; }
+  .ticks li::before { content: "✓"; color: var(--brand); font-weight: 800; margin-right: 6px; }
+
+  .mock {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: 0 20px 50px rgba(17,28,51,.16); overflow: hidden; font-size: 14px;
+  }
+  .mock-bar { display: flex; gap: 6px; padding: 10px 14px; background: var(--page); border-bottom: 1px solid var(--line); }
+  .mock-bar span { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+  .mock-body { padding: 16px; display: grid; gap: 8px; }
+  .row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px;
+  }
+  .row b { display: block; font-size: 14px; }
+  .row small { color: var(--muted); font-size: 12.5px; }
+  .total { display: flex; justify-content: space-between; padding: 8px 4px 0; font-size: 20px; font-weight: 800; }
+  .pill { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+  .ok { background: var(--brand-soft); color: var(--brand); }
+  .wait { background: color-mix(in srgb, var(--accent) 25%, transparent); color: #8a6500; }
+  @media (prefers-color-scheme: dark) { .wait { color: var(--accent); } }
+  .mock-note { font-size: 12.5px; color: var(--muted); padding: 2px 4px 0; }
+
+  .strip { background: var(--dark); color: #fff; padding: 22px 0; }
+  .strip .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center; }
+  .strip b { display: block; font-size: 22px; color: var(--accent); }
+  .strip span { font-size: 14px; color: #c9d3e0; }
+
+  .unique { display: grid; gap: 22px; margin-top: 40px; }
+  .u-card {
+    display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: start;
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px;
+  }
+  .u-card .ic { width: 56px; height: 56px; border-radius: 14px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; }
+  .ic svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .u-card h3 { font-size: 21px; margin-bottom: 6px; }
+  .u-card p { color: var(--muted); }
+  .u-card .badge { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--brand); }
+  @media (min-width: 900px) {
+    .unique { grid-template-columns: 1fr 1fr; }
+    .u-card.wide { grid-column: span 2; }
+  }
+
+  .features { background: var(--paper); border-block: 1px solid var(--line); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 18px; background: var(--page); }
+  .card b { display: block; font-size: 16.5px; margin-bottom: 4px; }
+  .card span { font-size: 14.5px; color: var(--muted); }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 36px; counter-reset: s; }
+  .step { padding: 20px 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+  .step::before {
+    counter-increment: s; content: counter(s);
+    display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+    background: var(--brand); color: #fff; font-weight: 800; margin-bottom: 10px;
+  }
+  @media (prefers-color-scheme: dark) { .step::before { color: #0a1330; } }
+  .step b { display: block; margin-bottom: 2px; }
+  .step span { font-size: 14.5px; color: var(--muted); }
+
+  .price-box {
+    margin-top: 36px; background: var(--dark); color: #fff; border-radius: 20px; padding: 36px;
+    display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: center;
+  }
+  .price-box .big { font-size: clamp(56px, 9vw, 84px); font-weight: 800; line-height: 1; }
+  .price-box .big small { display: block; font-size: 16px; font-weight: 700; color: var(--accent); margin-top: 8px; }
+  .price-box ul { list-style: none; padding: 0; display: grid; gap: 8px; color: #dfe6f0; }
+  .price-box li::before { content: "✓"; color: var(--accent); font-weight: 800; margin-right: 10px; }
+  .price-box strong { color: #fff; }
+  .price-box .btn { margin-top: 20px; background: var(--accent); color: #111c33; }
+  .price-box .btn:hover { background: #ffc933; }
+  .price-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .price-sub .card { background: var(--paper); }
+  @media (max-width: 720px) { .price-box { grid-template-columns: 1fr; padding: 28px 22px; gap: 22px; } }
+
+  .faq { max-width: 760px; margin: 36px auto 0; display: grid; gap: 10px; text-align: left; }
+  details { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; }
+  summary { cursor: pointer; font-weight: 700; padding: 16px 18px; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-size: 22px; line-height: 1; color: var(--brand); }
+  details[open] summary::after { content: "–"; }
+  details p { padding: 0 18px 16px; color: var(--muted); }
+
+  .final { background: var(--brand); color: #fff; text-align: center; }
+  @media (prefers-color-scheme: dark) { .final { background: #1e3a8a; } }
+  .final .sub { color: #e3ebff; margin: 0 auto 26px; }
+  .final .btn-light { background: #fff; color: #1e40af; }
+  .final .cta-row { justify-content: center; }
+
+  footer { padding: 28px 0 40px; font-size: 12.5px; color: var(--muted); }
+  footer p + p { margin-top: 8px; }
+
+  @media (max-width: 900px) {
+    section { padding: 52px 0; }
+    .hero { padding: 36px 0 52px; }
+    .hero .wrap { grid-template-columns: 1fr; gap: 36px; }
+    .strip .wrap { grid-template-columns: 1fr 1fr; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    .grid, .steps, .price-sub { grid-template-columns: 1fr; }
+    .u-card { grid-template-columns: 1fr; padding: 20px; gap: 12px; }
+    .cta-row .btn { width: 100%; }
+    .sub { font-size: 16.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Inicio">
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5v14M9 5v14M13 5v14M18 5v14M21 5v14"/></svg></i>
+      Forsati
+    </a>
+    <nav aria-label="Principal">
+      <a class="hide-sm" href="#diferencias">Ventajas</a>
+      <a class="hide-sm" href="#funciones">Funciones</a>
+      <a class="hide-sm" href="#precio">Precio</a>
+      <a class="btn btn-primary" href="#contacto">Probar gratis</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Para tiendas, minimarkets, bazares y ferreterías</span>
+      <h1>Venda, controle su stock y <em>facture al SRI</em> desde una sola pantalla</h1>
+      <p class="sub">Escanee el código de barras y listo: el stock baja, la venta queda registrada y sale la factura electrónica. Y si se cae el internet, usted sigue vendiendo.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#contacto">Pedir mi prueba gratis</a>
+        <a class="btn btn-ghost" href="#diferencias">Ver cómo funciona</a>
+      </div>
+      <ul class="ticks">
+        <li>14 días de prueba gratis</li>
+        <li>$15 al mes, todo incluido</li>
+        <li>Sin instalar sistemas pesados</li>
+      </ul>
+    </div>
+
+    <div class="mock" role="img" aria-label="Ejemplo de una venta: tres productos escaneados, total y una venta en espera de internet que se enviará sola.">
+      <div class="mock-bar"><span></span><span></span><span></span></div>
+      <div class="mock-body">
+        <div class="row"><div><b>Arroz 2 kg</b><small>1 × $2,40</small></div><b>$2,40</b></div>
+        <div class="row"><div><b>Aceite 1 L</b><small>2 × $3,10</small></div><b>$6,20</b></div>
+        <div class="row"><div><b>Cuaderno 100 hojas</b><small>1 × $1,50</small></div><b>$1,50</b></div>
+        <div class="total"><span>Total</span><span>$10,10</span></div>
+        <div class="row"><div><b>Venta anterior</b><small>Sin internet · $7,00</small></div><span class="pill wait">Se enviará sola</span></div>
+        <p class="mock-note">Ilustración. Las pantallas reales son igual de simples.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="wrap">
+    <div><b>$15 / mes</b><span>un solo plan, todo incluido</span></div>
+    <div><b>14 días</b><span>de prueba gratis</span></div>
+    <div><b>Sin internet</b><span>la venta no se detiene</span></div>
+    <div><b>Factura SRI</b><span>en cada venta</span></div>
+  </div>
+</div>
+
+<!-- UNIQUE -->
+<section id="diferencias">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Lo que cambia en su mostrador</span>
+      <h2>Menos errores, menos filas, más control</h2>
+      <p class="sub">Hecho para el mostrador de una tienda, no para un contador: sin módulos que nunca usará.</p>
+    </div>
+
+    <div class="unique">
+      <article class="u-card">
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6v12M7 6v12M10 6v12M14 6v12M17 6v12M20 6v12"/></svg></div>
+        <div>
+          <h3>Escanee y venda</h3>
+          <p>Pase el producto por el lector y se agrega al carrito. Total, IVA y vuelto se calculan solos. Efectivo o transferencia, y ticket para imprimir.</p>
+          <span class="badge">Pensado para la velocidad del cajero</span>
+        </div>
+      </article>
+
+      <article class="u-card">
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+        <div>
+          <h3>Sepa cuánto stock tiene y dónde está</h3>
+          <p>Escanee la mercadería al recibirla y el stock sube. Cada venta lo baja. Cada producto lleva su ubicación («Pasillo 3, estante B»), así cualquiera lo encuentra. Ajuste y cuente el inventario cuando quiera, y vea qué producto se está acabando.</p>
+          <span class="badge">Cada movimiento queda con fecha y usuario</span>
+        </div>
+      </article>
+
+      <article class="u-card">
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></div>
+        <div>
+          <h3>Factura electrónica del SRI en cada venta</h3>
+          <p>Cada venta genera su factura. ¿El cliente quiere factura con su cédula o RUC? Elija «Con datos» y complétela en el momento. Si el internet o el SRI fallan, la venta queda guardada y <strong>se factura sola al volver</strong>, sin repetirse.</p>
+        </div>
+      </article>
+
+      <article class="u-card">
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9a15 15 0 0120 0M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0"/><path d="M3 3l18 18"/></svg></div>
+        <div>
+          <h3>Sin internet, usted sigue vendiendo</h3>
+          <p>Las ventas se guardan en la computadora de la caja y se sincronizan cuando vuelve la conexión. Ni se pierden ni se duplican.</p>
+        </div>
+      </article>
+
+      <article class="u-card wide">
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+        <div>
+          <h3>Mire su tienda desde el celular</h3>
+          <p>Como dueño, vea las ventas del día, el total en efectivo y en transferencia, el stock por producto y la lista de productos por agotarse, estando donde esté. Revise el historial de ventas de cualquier día y reimprima un ticket. La caja la maneja su cajero: él no ve reportes ni cambia precios.</p>
+          <span class="badge">Dueño y cajero, cada uno con lo que necesita</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="funciones" class="features">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Todo lo básico, bien hecho</span>
+      <h2>Lo que incluye Forsati</h2>
+      <p class="sub">Un solo plan con todas las funciones. Sin versiones «Pro» ni cobro por usuario.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><b>Productos con código de barras</b><span>Nombre, precio, IVA y ubicación. Si escanea uno nuevo al recibir, lo crea ahí mismo.</span></div>
+      <div class="card"><b>Venta de artículos «Varios»</b><span>¿Algo sin código de barras? Escriba qué es y el precio, y véndalo.</span></div>
+      <div class="card"><b>Recibir mercadería</b><span>Escanee lo que llega y el stock sube. Queda el registro de cada ingreso.</span></div>
+      <div class="card"><b>Conteo y ajustes de inventario</b><span>Cuente la tienda con el lector y aplique solo las diferencias.</span></div>
+      <div class="card"><b>Efectivo y transferencia</b><span>Con cálculo de vuelto y reporte separado por tipo de pago.</span></div>
+      <div class="card"><b>Ticket e historial</b><span>Imprima el ticket desde el navegador. Reimprima cualquier venta, con el número de factura.</span></div>
+      <div class="card"><b>Dueños y cajeros</b><span>Agregue a su personal. El cajero vende; el dueño ve reportes y administra.</span></div>
+      <div class="card"><b>Stock bajo</b><span>Defina un mínimo por producto y vea la lista de lo que hay que pedir.</span></div>
+      <div class="card"><b>Sus datos son suyos</b><span>Descargue sus productos, movimientos y ventas en CSV cuando quiera.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section>
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Cómo empezar</span>
+      <h2>De hoy a su primera venta</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><b>Pida su prueba</b><span>Escríbanos y le abrimos su tienda de prueba gratis por 14 días.</span></div>
+      <div class="step"><b>Cargue sus productos</b><span>Escaneando o con una plantilla. Le ayudamos a distancia.</span></div>
+      <div class="step"><b>Conecte la caja</b><span>Abra Forsati en el navegador de la computadora de caja y conecte lector e impresora.</span></div>
+      <div class="step"><b>Venda</b><span>Pase a plan pagado cuando ya lo vio funcionar en su tienda.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICE -->
+<section id="precio" class="features">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Precio</span>
+      <h2>Un plan, sin letra chica</h2>
+    </div>
+    <div class="price-box">
+      <div class="big">$15<small>al mes · precio final</small></div>
+      <div>
+        <ul>
+          <li><strong>Una tienda, una caja,</strong> con todos los usuarios que necesite.</li>
+          <li>Todas las funciones, sin tarifas por usuario.</li>
+          <li>Programa de facturación electrónica del SRI incluido.</li>
+          <li>Ayuda para empezar y soporte por WhatsApp en días hábiles.</li>
+          <li><strong>14 días de prueba gratis</strong> con facturas en el ambiente de pruebas del SRI.</li>
+        </ul>
+        <a class="btn" href="#contacto">Pedir mi prueba gratis</a>
+      </div>
+    </div>
+    <div class="price-sub">
+      <div class="card"><b>Pago anual: $150 al año</b><span>Dos meses gratis ($12,50 al mes).</span></div>
+      <div class="card"><b>Sus datos nunca quedan encerrados</b><span>Si decide irse, exporta sus productos, movimientos y ventas en CSV.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="wrap center">
+    <span class="eyebrow">Preguntas frecuentes</span>
+    <h2>Lo que suelen preguntar</h2>
+    <div class="faq">
+      <details><summary>¿Qué necesito para empezar?</summary><p>Una computadora con Windows y Google Chrome en la caja, un lector de código de barras (si ya tiene uno, sirve) y su certificado de firma electrónica vigente para facturar. Para imprimir tickets, una impresora común o térmica.</p></details>
+      <details><summary>¿Funciona si se cae el internet?</summary><p>Sí. Las ventas se guardan en la computadora de la caja y se sincronizan al volver la conexión. Lo que sí necesita internet: crear o editar productos y ver reportes.</p></details>
+      <details><summary>¿Y las facturas del SRI?</summary><p>Cada venta genera su factura electrónica con el programa de facturación que se instala una sola vez en la computadora de la caja. Si no hay internet, queda pendiente y se emite al volver. El SRI puede rechazar una factura por datos incorrectos; el programa muestra el motivo para corregirla.</p></details>
+      <details><summary>¿Sirve para restaurantes?</summary><p>No, está hecho para comercios que venden productos con código de barras: tiendas, minimarkets, bazares, papelerías, ferreterías.</p></details>
+      <details><summary>¿Puedo manejar varias sucursales?</summary><p>Todavía no. Un plan sirve para una tienda y una caja. Escríbanos si necesita más.</p></details>
+      <details><summary>¿Qué pasa con mis datos si dejo de pagar?</summary><p>Tiene 7 días de gracia; después se bloquea el sistema, pero puede descargar sus datos en CSV. Le avisamos por correo, y sus datos no se borran antes de 90 días después de ese plazo.</p></details>
+      <details><summary>¿Cuánto cuesta?</summary><p>$15 al mes o $150 al año, precio final, todo incluido. La prueba de 14 días es gratis.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="final" id="contacto">
+  <div class="wrap">
+    <h2>Pruebe Forsati 14 días gratis</h2>
+    <p class="sub">Escríbanos y abrimos su tienda de prueba. Le ayudamos a cargar sus productos y a hacer sus primeras ventas.</p>
+    <div class="cta-row">
+      <a class="btn btn-light" href="mailto:williamlsh@protonmail.com?subject=Quiero%20probar%20Forsati">Escribir por correo</a>
+      <!-- TODO: botón de WhatsApp cuando exista el número -->
+    </div>
+    <p style="margin-top:18px;font-size:15px;color:#e3ebff">williamlsh@protonmail.com</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Requiere internet para sincronizar, para los reportes y para enviar facturas al SRI. Para emitir facturas reales se necesita un certificado de firma electrónica vigente. Precios en dólares, finales.</p>
+    <p>Forsati no es un producto del SRI ni está afiliado a esa institución.</p>
+  </div>
+</footer>
+
+</body>
+</html>
